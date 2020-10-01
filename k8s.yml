@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calculate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calculate
+  template:
+    metadata:
+      labels:
+        app: calculate
+    spec:
+      containers:
+      - image: okteto/calculate:golang
+        name: calculate
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: calculate
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  type: ClusterIP  
+  ports:
+  - name: "calculate"
+    port: 8080
+  selector:
+    app: calculate
